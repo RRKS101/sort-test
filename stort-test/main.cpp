@@ -8,8 +8,8 @@ std::vector<uint32_t> generate_list(size_t num_elements, uint32_t m, uint32_t b,
 	for (size_t i = 0; i < num_elements; ++i)
 	{
 		uint32_t noise_factor = (rand() % (num_elements * m + b)) + b;
-		x[i] = noise_factor;
-		//x[i] = m * (i + noise_factor) + b + noise_factor;
+		//x[i] = noise_factor;
+		x[i] = m * i + b + noise_factor;
 	}
 	shuffle_inplace(x);
 	return x;
@@ -46,7 +46,7 @@ int main()
 		ScopeTimer t("List Generator");
 		x = generate_list(NUM_ELEMENTS, 1, 1);
 	}
-	printf("Generated unsorted array\n");
+	printf("Generated unsorted array of length %llu\n", NUM_ELEMENTS);
 	
 
 	std::vector<uint32_t> sx;
@@ -72,6 +72,20 @@ int main()
 	}
 	if (is_sorted(x) == -1) printf("Insertion Sort \033[38;5;10mSucceeded\033[m\n");
 	else printf("Insertion Sort \033[38;5;9mFailed\033[m\n");
+
+
+	for (size_t i = 0; i < NUM_ELEMENTS; ++i)
+	{
+		if (sx[i] == x[i]) continue;
+		printf("\033[38;5;9mMismatch between swifty sort and insertion sort!\n  ");
+		printf("Swiftie Sort: "); 
+		print_vec(sx, i - 2, i + 2);
+		printf("  Insertion Sort: ");
+		print_vec(x, i - 2, i + 2);
+		printf("\033[m");
+		return -1;
+	}
+	printf("Both sorts worked.\n");
 
 	return 0;
 }
